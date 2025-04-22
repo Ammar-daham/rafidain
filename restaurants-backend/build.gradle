@@ -19,6 +19,10 @@ repositories {
 
 dependencies {
     // Add your dependencies here
+    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    
+	implementation group: 'org.hibernate', name: 'hibernate-core', version: '6.6.13.Final', ext: 'pom'
+	implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.5'
 }
 
 
