@@ -1,0 +1,54 @@
+plugins {
+    id 'war'
+    id 'eclipse-wtp'
+}
+
+project.version = version
+project.group = 'com.rafidain.tech'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    // Add your dependencies here
+}
+
+
+eclipse {
+    wtp {
+        component {
+            resource sourcePath: 'src/test/resources', deployPath: 'WEB-INF/classes'
+        }
+    }
+}
+
+task createDirs {
+    doLast {
+        file('src/main/java').mkdirs()
+        file('src/test/java').mkdirs()
+        file('src/test/resources').mkdirs()
+    }
+}
+
+build.dependsOn createDirs
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+    }
+}
