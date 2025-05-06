@@ -12,21 +12,38 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "Restaurants", urlPatterns = "/*", loadOnStartup = 1)
 public class RestaurantServlet extends HttpServlet
 {
-	
 	private static final long serialVersionUID = 1L;
+	
+	private RestaurantDao restaurantDao;
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException
 	{
 		super.init(config);
-		
-		System.out.println("Hello world");
+		try
+		{
+			TransactionManager transactionManager = new TransactionManager();
+			restaurantDao = new RestaurantDao(transactionManager);
+			System.out.println("RestaurantDao initialized and DB connection tested.");
+		}
+		catch (Exception e)
+		{
+			throw new ServletException("Failed to initialize RestaurantDao", e);
+		}
+	}
+	
+	@Override
+	public void destroy()
+	{
+		if (restaurantDao != null)
+		{
+			restaurantDao.shutdown();
+		}
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		
 		response.setContentType("text/plain");
 		response.getWriter().println("Hello from RestaurantServlet!");
 	}

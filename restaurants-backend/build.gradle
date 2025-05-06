@@ -21,14 +21,17 @@ dependencies {
     // Add your dependencies here
     implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
     
-	implementation group: 'org.hibernate', name: 'hibernate-core', version: '6.6.13.Final', ext: 'pom'
-	implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.5'
+	implementation group: 'org.hibernate', name: 'hibernate-core', version: '6.6.13.Final'
+	implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.5'	
+	implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+	
 }
 
 
 eclipse {
     wtp {
         component {
+            resource sourcePath: 'src/main/resources', deployPath: 'WEB-INF/classes'
             resource sourcePath: 'src/test/resources', deployPath: 'WEB-INF/classes'
         }
     }
@@ -37,6 +40,7 @@ eclipse {
 task createDirs {
     doLast {
         file('src/main/java').mkdirs()
+        file('src/main/resources').mkdirs()
         file('src/test/java').mkdirs()
         file('src/test/resources').mkdirs()
     }
@@ -49,10 +53,16 @@ sourceSets {
         java {
             srcDirs = ['src/main/java']
         }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
     }
     test {
         java {
             srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
         }
     }
 }

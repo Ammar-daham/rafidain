@@ -1,2 +1,16 @@
+# Ignore Eclipse/IDE-related files
+.classpath
+.project
+.settings/
+
+# Ignore build output
+/bin/
+/build/
+/out/
+
+# Ignore web output if generated
+WEB-INF/
+
 .gradle/
 build/
+hibernate.cfg.xml
