@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.rafidain.tech.persistence.RestaurantDao;
+import com.rafidain.tech.persistence.TransactionManager;
+
 @WebServlet(name = "Restaurants", urlPatterns = "/*", loadOnStartup = 1)
 public class RestaurantServlet extends HttpServlet
 {
