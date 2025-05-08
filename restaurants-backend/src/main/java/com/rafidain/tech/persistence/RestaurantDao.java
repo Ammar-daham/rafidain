@@ -1,24 +1,29 @@
 package com.rafidain.tech.persistence;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class RestaurantDao
 {
-	private final SessionFactory sessionFactory;
-	private final TransactionManager transactionManager;
 	
-	public RestaurantDao(TransactionManager transactionManager)
+	public SessionFactory buildSessionFactory()
 	{
-		this.transactionManager = transactionManager;
-		this.sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
-	}
-	
-	public void shutdown()
-	{
-		if (sessionFactory != null)
+		SessionFactory sessionFactory = null;
+		final StandardServiceRegistry registery = new StandardServiceRegistryBuilder().configure().build();
+		if (sessionFactory == null)
 		{
-			sessionFactory.close();
+			try
+			{
+				sessionFactory = new MetadataSources(registery).addAnnotatedClass(Restaurant.class).buildMetadata()
+						.buildSessionFactory();
+			}
+			catch (Throwable ex)
+			{
+				throw new ExceptionInInitializerError(ex);
+			}
 		}
+		return sessionFactory;
 	}
 }

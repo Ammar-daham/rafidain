@@ -1,48 +1,46 @@
 package com.rafidain.tech.persistence;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 public class TransactionManager
 {
-	private static final ThreadLocal<Transaction> threadLocalTransaction = new ThreadLocal<>();
+	private SessionFactory sessionFactory;
 	
-	public void beginTransaction(Session session)
-	{
-		if (session != null && !session.getTransaction().isActive())
-		{
-			threadLocalTransaction.set(session.beginTransaction());
-		}
+	public TransactionManager(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 	
-	public void commitTransaction()
-	{
-		Transaction tx = threadLocalTransaction.get();
-		if (tx != null && tx.isActive())
-		{
-			try
-			{
-				tx.commit();
-			}
-			catch (Exception e)
-			{
-				rollbackTransaction();
-				throw e;
-			}
-			finally
-			{
-				threadLocalTransaction.remove();
-			}
-		}
+	public Session getCurrentSession() {
+		return sessionFactory.getCurrentSession();
 	}
 	
-	public void rollbackTransaction()
+	/**
+	 * Starts new hibernate transaction
+	 */
+	public void  beginTransaction() {
+		sessionFactory.getCurrentSession().beginTransaction();
+	}
+	
+	public void commit() {
+		sessionFactory.getCurrentSession().getTransaction().commit();
+	}
+	
+	public void shutdown()
 	{
-		Transaction tx = threadLocalTransaction.get();
-		if (tx != null && tx.isActive())
+		sessionFactory.close();
+	}
+	
+	public void endTransaction()
+	{
+		Transaction currentTransaction = sessionFactory.getCurrentSession().getTransaction();
+		
+		if (currentTransaction.isActive())
 		{
-			tx.rollback();
-			threadLocalTransaction.remove();
+			currentTransaction.rollback();
 		}
+		
+		sessionFactory.getCurrentSession().close();
 	}
 }
