@@ -17,7 +17,8 @@ public class RestaurantDao
 			try
 			{
 				sessionFactory = new MetadataSources(registery).addAnnotatedClass(Restaurant.class)
-						.addAnnotatedClass(SocialMedia.class).buildMetadata()
+						.addAnnotatedClass(SocialMedia.class).addAnnotatedClass(Address.class)
+						.addAnnotatedClass(City.class).buildMetadata()
 						.buildSessionFactory();
 			}
 			catch (Throwable ex)

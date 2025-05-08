@@ -8,7 +8,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,7 +27,13 @@ public class Restaurant
 	
 	public String description;
 	
-	public String address;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "address_id", referencedColumnName = "address_id")
+	public Address address;
+	
+	@ManyToOne
+	@JoinColumn(name = "city_id", referencedColumnName = "city_id")
+	private City city;
 	
 	@Column(name = "phone_number")
 	public String phoneNumber;
@@ -50,26 +59,6 @@ public class Restaurant
 		this.restaurantId = restaurantId;
 	}
 	
-	public Double getRating()
-	{
-		return rating;
-	}
-	
-	public void setRating(Double rating)
-	{
-		this.rating = rating;
-	}
-	
-	public String getOpeningHours()
-	{
-		return openingHours;
-	}
-	
-	public void setOpeningHours(String openingHours)
-	{
-		this.openingHours = openingHours;
-	}
-	
 	public String getName()
 	{
 		return name;
@@ -90,12 +79,22 @@ public class Restaurant
 		this.description = description;
 	}
 	
-	public String getAddress()
+	public Address getAddress()
 	{
 		return address;
 	}
 	
-	public void setAddress(String address)
+	public City getCity()
+	{
+		return city;
+	}
+	
+	public void setCity(City city)
+	{
+		this.city = city;
+	}
+	
+	public void setAddress(Address address)
 	{
 		this.address = address;
 	}
@@ -130,11 +129,32 @@ public class Restaurant
 		this.socialMedia = socialMedia;
 	}
 	
+	public Double getRating()
+	{
+		return rating;
+	}
+	
+	public void setRating(Double rating)
+	{
+		this.rating = rating;
+	}
+	
+	public String getOpeningHours()
+	{
+		return openingHours;
+	}
+	
+	public void setOpeningHours(String openingHours)
+	{
+		this.openingHours = openingHours;
+	}
+	
 	@Override
 	public String toString()
 	{
 		return "Restaurant [restaurantId=" + restaurantId + ", name=" + name + ", description=" + description
 				+ ", address=" + address + ", phoneNumber=" + phoneNumber + ", isOpen=" + isOpen + ", rating=" + rating
-				+ ", openingHours=" + openingHours + ", socialMediaLinks=" + socialMedia + "]";
+				+ ", city=" + city
+				+ ", openingHours=" + openingHours + ", socialMedia=" + socialMedia + "]";
 	}
 }

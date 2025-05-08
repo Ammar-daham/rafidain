@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.rafidain.tech.persistence.Address;
+import com.rafidain.tech.persistence.City;
 import com.rafidain.tech.persistence.Restaurant;
 import com.rafidain.tech.persistence.RestaurantDao;
 import com.rafidain.tech.persistence.SocialMedia;
@@ -38,7 +40,6 @@ public class RestaurantServlet extends HttpServlet
 			Restaurant res = new Restaurant();
 			
 			res.setName("Kotkot");
-			res.setAddress("Hämeentie");
 			res.setDescription("Delicious grilled chicken");
 			res.setIsOpen(true);
 			res.setPhoneNumber("00000");
@@ -62,14 +63,37 @@ public class RestaurantServlet extends HttpServlet
 			socialMediaList.add(facebook);
 			res.setSocialMedia(socialMediaList);
 			
+			Address address = new Address();
+			address.setPostalCode("00560");
+			address.setStreetName("Hämeentie 109");
+			res.setAddress(address);
+			
+			// Create City
+			City city = new City();
+			city.setName("Helsinki");
+			
 			transactionManager.beginTransaction();
 			try
 			{
-				// Save the restaurant entity
-				transactionManager.getCurrentSession().save(res);
+				// Save City entity first
+				transactionManager.getCurrentSession().save(city);  // Save the city
+				
+				// Now set the city in the restaurant and associate it with the city
+				res.setCity(city); // Set the city for the restaurant
+				
+				// Add the restaurant to the city's restaurant list (this is a good practice, though optional in this case)
+				List<Restaurant> cityRestaurants = new ArrayList<>();
+				cityRestaurants.add(res);
+				city.setRestaurants(cityRestaurants);
+				
+				// Now save the restaurant (this will also save the address)
+				transactionManager.getCurrentSession().save(res); // Save the restaurant
 				
 				// Commit transaction
 				transactionManager.commit();
+				
+				//res = transactionManager.getCurrentSession().get(Restaurant.class, 1);
+				//System.out.println("res " + res.toString());
 				System.out.println("Restaurant saved successfully!");
 			}
 			catch (Exception e)
