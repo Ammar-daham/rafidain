@@ -2,11 +2,13 @@ package com.rafidain.tech.persistence;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,6 +17,7 @@ public class Restaurant
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "restaurant_id")
 	public Long restaurantId;
 	
 	public String name;
@@ -34,7 +37,8 @@ public class Restaurant
 	public String openingHours;
 	
 	@Column(name = "social_media")
-	public List<String> socialMedia;
+	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+	private List<SocialMedia> socialMedia;
 	
 	public Long getRestaurantId()
 	{
@@ -114,5 +118,23 @@ public class Restaurant
 	public void setIsOpen(Boolean isOpen)
 	{
 		this.isOpen = isOpen;
+	}
+	
+	public List<SocialMedia> getSocialMedia()
+	{
+		return socialMedia;
+	}
+	
+	public void setSocialMedia(List<SocialMedia> socialMedia)
+	{
+		this.socialMedia = socialMedia;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Restaurant [restaurantId=" + restaurantId + ", name=" + name + ", description=" + description
+				+ ", address=" + address + ", phoneNumber=" + phoneNumber + ", isOpen=" + isOpen + ", rating=" + rating
+				+ ", openingHours=" + openingHours + ", socialMediaLinks=" + socialMedia + "]";
 	}
 }
