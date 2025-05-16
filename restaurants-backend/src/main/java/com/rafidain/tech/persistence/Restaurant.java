@@ -154,7 +154,7 @@ public class Restaurant
 	{
 		return "Restaurant [restaurantId=" + restaurantId + ", name=" + name + ", description=" + description
 				+ ", address=" + address + ", phoneNumber=" + phoneNumber + ", isOpen=" + isOpen + ", rating=" + rating
-				+ ", city=" + city
+				
 				+ ", openingHours=" + openingHours + ", socialMedia=" + socialMedia + "]";
 	}
 }

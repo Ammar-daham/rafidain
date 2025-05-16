@@ -1,0 +1,35 @@
+package com.rafidain.tech.persistence;
+
+public enum FinnishCity
+{
+	HELSINKI,
+	ESPOO,
+	VANTAA,
+	TAMPERE,
+	TURKU,
+	OULU,
+	LAHTI,
+	KUOPIO,
+	JYVÄSKYLÄ,
+	PORI,
+	LAPPEENRANTA,
+	VAASA,
+	KOTKA,
+	JOENSUU,
+	HÄMEENLINNA,
+	PORVOO,
+	MIKKELI,
+	HYVINKÄÄ,
+	NURMIJÄRVI,
+	JÄRVENPÄÄ,
+	RAUMA,
+	LOHJA,
+	KERAVA,
+	KAJAANI,
+	IMATRA,
+	ROVANIEMI,
+	KOKKOLA,
+	TUUSULA,
+	KIRKKONUMMI,
+	SEINÄJOKI
+}
