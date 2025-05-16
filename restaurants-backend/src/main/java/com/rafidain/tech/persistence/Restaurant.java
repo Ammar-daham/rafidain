@@ -49,6 +49,10 @@ public class Restaurant
 	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
 	private List<SocialMedia> socialMedia;
 	
+	@ManyToOne
+	@JoinColumn(name = "owner_id", referencedColumnName = "user_id")
+	private User owner;
+	
 	public Long getRestaurantId()
 	{
 		return restaurantId;
