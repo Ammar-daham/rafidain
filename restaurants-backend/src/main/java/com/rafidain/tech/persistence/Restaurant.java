@@ -38,6 +38,7 @@ public class Restaurant
 	@Column(name = "phone_number")
 	public String phoneNumber;
 	
+	@Column(name = "is_open")
 	public Boolean isOpen;
 	
 	public Double rating;

@@ -2,6 +2,8 @@ package com.rafidain.tech.persistence;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,11 +26,13 @@ public class City
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "name", nullable = false, unique = true)
+	@JsonProperty("name")
 	public FinnishCity name;
 	
 	@OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
 	public List<Restaurant> restaurants;
 	
+
 	public Long getCityId()
 	{
 		return cityId;
@@ -44,9 +48,9 @@ public class City
 		return name;
 	}
 	
-	public void setName(FinnishCity cityEnum)
+	public void setName(String name)
 	{
-		this.name = cityEnum;
+		this.name = FinnishCity.valueOf(name.toUpperCase());
 	}
 	
 	public List<Restaurant> getRestaurants()
@@ -64,7 +68,4 @@ public class City
 	{
 		return "City [cityId=" + cityId + ", name=" + name + ", restaurants=" + restaurants + "]";
 	}
-
-	
-	
 }

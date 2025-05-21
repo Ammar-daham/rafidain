@@ -1,6 +1,8 @@
 package com.rafidain.tech.persistence;
 
 
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -35,6 +38,9 @@ public class User
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false, unique = true)
 	public Role role;
+	
+	@OneToMany(mappedBy = "owner")
+	private List<Restaurant> ownedRestaurants;
 	
 	public Long getUserId()
 	{
