@@ -35,5 +35,83 @@ public class MenuItem
 	
 	@OneToMany(mappedBy = "menuItem")
 	private List<OrderItem> orderItems;
+	
+	public Long getMenuItemId()
+	{
+		return menuItemId;
+	}
+	
+	public void setMenuItemId(Long menuItemId)
+	{
+		this.menuItemId = menuItemId;
+	}
+	
+	public String getName()
+	{
+		return name;
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	
+	public String getDescription()
+	{
+		return description;
+	}
+	
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+	
+	public Double getPrice()
+	{
+		return price;
+	}
+	
+	public void setPrice(Double price)
+	{
+		this.price = price;
+	}
+	
+	public Menu getMenu()
+	{
+		return menu;
+	}
+	
+	public void setMenu(Menu menu)
+	{
+		this.menu = menu;
+	}
+	
+	public Restaurant getRestaurant()
+	{
+		return restaurant;
+	}
+	
+	public void setRestaurant(Restaurant restaurant)
+	{
+		this.restaurant = restaurant;
+	}
+	
+	public List<OrderItem> getOrderItems()
+	{
+		return orderItems;
+	}
+	
+	public void setOrderItems(List<OrderItem> orderItems)
+	{
+		this.orderItems = orderItems;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "MenuItem [menuItemId=" + menuItemId + ", name=" + name + ", description=" + description + ", price="
+				+ price + "]";
+	}
+	
 }
 

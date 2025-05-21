@@ -54,6 +54,10 @@ public class Restaurant
 	@JoinColumn(name = "owner_id", referencedColumnName = "user_id")
 	private User owner;
 	
+	@Column(name = "menus")
+	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+	private List<Menu> menu;
+	
 	public Long getRestaurantId()
 	{
 		return restaurantId;
@@ -154,12 +158,22 @@ public class Restaurant
 		this.openingHours = openingHours;
 	}
 	
+	public List<Menu> getMenu()
+	{
+		return menu;
+	}
+	
+	public void setMenu(List<Menu> menu)
+	{
+		this.menu = menu;
+	}
+	
 	@Override
 	public String toString()
 	{
 		return "Restaurant [restaurantId=" + restaurantId + ", name=" + name + ", description=" + description
 				+ ", address=" + address + ", phoneNumber=" + phoneNumber + ", isOpen=" + isOpen + ", rating=" + rating
 				
-				+ ", openingHours=" + openingHours + ", socialMedia=" + socialMedia + "]";
+				+ ", openingHours=" + openingHours + ", socialMedia=" + socialMedia + ", menu=" + menu + "]";
 	}
 }

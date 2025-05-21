@@ -26,15 +26,11 @@ public class OrderItem
 	
 	@ManyToOne
 	@JoinColumn(name = "menu_item_id", referencedColumnName = "menu_item_id")
-	//private MenuItem menuItem;
+	private com.rafidain.tech.persistence.MenuItem menuItem;
 	
 	private int quantity;
 	private double price;
 	
-	// Constructors
-	public OrderItem()
-	{
-	}
 	
 	public OrderItem(Order order, MenuItem menuItem, int quantity, double price)
 	{
@@ -65,15 +61,15 @@ public class OrderItem
 		this.order = order;
 	}
 	
-	//	public MenuItem getMenuItem()
-	//	{
-	//		return menuItem;
-	//	}
-	//	
-	//	public void setMenuItem(MenuItem menuItem)
-	//	{
-	//		this.menuItem = menuItem;
-	//	}
+	public com.rafidain.tech.persistence.MenuItem getMenuItem()
+	{
+		return menuItem;
+	}
+	
+	public void setMenuItem(com.rafidain.tech.persistence.MenuItem menuItem)
+	{
+		this.menuItem = menuItem;
+	}
 	
 	public int getQuantity()
 	{

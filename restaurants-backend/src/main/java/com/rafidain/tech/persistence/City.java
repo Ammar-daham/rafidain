@@ -48,10 +48,15 @@ public class City
 		return name;
 	}
 	
-	public void setName(String name)
+	public void setName(FinnishCity name)
 	{
-		this.name = FinnishCity.valueOf(name.toUpperCase());
+		this.name = name;
 	}
+	
+	//	public void setName(String name)
+	//	{
+	//		this.name = FinnishCity.valueOf(name.toUpperCase());
+	//	}
 	
 	public List<Restaurant> getRestaurants()
 	{

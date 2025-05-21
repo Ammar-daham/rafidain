@@ -1,7 +1,6 @@
 package com.rafidain.tech;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -15,6 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rafidain.tech.persistence.Address;
 import com.rafidain.tech.persistence.City;
 import com.rafidain.tech.persistence.FinnishCity;
+import com.rafidain.tech.persistence.Menu;
+import com.rafidain.tech.persistence.MenuItem;
 import com.rafidain.tech.persistence.Restaurant;
 import com.rafidain.tech.persistence.RestaurantDao;
 import com.rafidain.tech.persistence.SocialMedia;
@@ -36,65 +37,34 @@ public class RestaurantServlet extends HttpServlet
 		transactionManager = new TransactionManager(restaurantDao.buildSessionFactory());
 		restaurantDao = new RestaurantDao(transactionManager);
 		System.out.println("RestaurantDao initialized and DB connection tested.");
-		//		transactionManager.beginTransaction();
-		//		try
-		//		{
-		//			
-		//			// Retrieve an existing city from the database
-		//			City city =
-		//					transactionManager.getCurrentSession().createQuery("FROM City WHERE name = :cityName", City.class)
-		//							.setParameter("cityName", FinnishCity.HELSINKI) // Example: Helsinki
-		//							.getSingleResult();
-		//			
-		//			System.out.println(city.toString());
-		//			
-		//			// Create a new restaurant and associate it with an existing city
-		//			Restaurant res = new Restaurant();
-		//			res.setName("Kotkot");
-		//			res.setDescription("Delicious grilled chicken");
-		//			res.setIsOpen(true);
-		//			res.setPhoneNumber("00000");
-		//			res.setOpeningHours("10:00 - 22:00");
-		//			res.setRating(4.5);
-		//			res.setCity(city); // Associate the restaurant with the retrieved city
-		//			
-		//			// Create Address
-		//			Address address = new Address();
-		//			address.setPostalCode("00560");
-		//			address.setStreetName("Hämeentie 109");
-		//			res.setAddress(address); // Associate address with the restaurant
-		//			
-		//			// Create Social Media entries
-		//			SocialMedia instagram = new SocialMedia();
-		//			instagram.setPlatform("Instagram");
-		//			instagram.setUrl("https://instagram.com/kotkot");
-		//			instagram.setRestaurant(res);  // Link to restaurant
-		//			
-		//			SocialMedia facebook = new SocialMedia();
-		//			facebook.setPlatform("Facebook");
-		//			facebook.setUrl("https://facebook.com/kotkot");
-		//			facebook.setRestaurant(res);  // Link to restaurant
-		//			
-		//			// Add social media entries to the restaurant
-		//			List<SocialMedia> socialMediaList = new ArrayList<>();
-		//			socialMediaList.add(instagram);
-		//			socialMediaList.add(facebook);
-		//			res.setSocialMedia(socialMediaList);
-		//			
-		//			transactionManager.getCurrentSession().save(res); // Save the restaurant
-		//			
-		//			transactionManager.commit();
-		//			System.out.println("Restaurant saved successfully in city: " + city.getName());
-		//			
-		//		}
-		//		catch (Exception e)
-		//		{
-		//			e.printStackTrace();
-		//		}
-		//		finally
-		//		{
-		//			transactionManager.endTransaction();
-		//		}
+		
+		transactionManager.beginTransaction();
+		try
+		{
+			
+			//						for (FinnishCity cityEnum : FinnishCity.values())
+			//						{
+			//							City city = new City();
+			//							city.setName(cityEnum); // Set the enum value
+			//							transactionManager.getCurrentSession().persist(city); // Save City entity
+			//						}
+			Restaurant restaurant = transactionManager.getCurrentSession().get(Restaurant.class, 252);
+			
+			System.out.println("res " + restaurant.toString());
+			
+			//transactionManager.commit();
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			transactionManager.endTransaction();
+		}
+						
+
 	}
 	
 	@Override
@@ -128,6 +98,12 @@ public class RestaurantServlet extends HttpServlet
 			{
 				case "createRestaurant":
 					createRestaurant(request, response);
+					break;
+				case "addMenu":
+					addMenu(request, response);
+					break;
+				case "addMenuItem":
+					addMenuItem(request, response);
 					break;
 				default:
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -174,25 +150,22 @@ public class RestaurantServlet extends HttpServlet
 			restaurant.setCity(city);
 			
 			// Create Address object
-			Address address = new Address();
-			address.setStreetName(request.getParameter("street"));
-			address.setPostalCode(request.getParameter("postalCode"));
+			Address address = restaurant.getAddress();
+			address.setStreetName(address.getStreetName());
+			address.setPostalCode(address.getPostalCode());
 			restaurant.setAddress(address);
 			
-			// Create Social Media object
-			List<SocialMedia> socialMediaList = new ArrayList<>();
-			SocialMedia instagram = new SocialMedia();
-			instagram.setPlatform("Instagram");
-			instagram.setUrl(request.getParameter("instagramUrl"));
-			instagram.setRestaurant(restaurant);
-			socialMediaList.add(instagram);
-			
-			SocialMedia facebook = new SocialMedia();
-			facebook.setPlatform("Facebook");
-			facebook.setUrl(request.getParameter("facebookUrl"));
-			facebook.setRestaurant(restaurant);
-			socialMediaList.add(facebook);
-			
+			// Create Social Media objects
+			List<SocialMedia> socialMediaList = restaurant.getSocialMedia();
+			if (socialMediaList != null)
+			{
+				for (SocialMedia sm : socialMediaList)
+				{
+					sm.setPlatform(sm.getPlatform());
+					sm.setUrl(sm.getUrl());
+					sm.setRestaurant(restaurant);
+				}
+			}
 			restaurant.setSocialMedia(socialMediaList);
 			
 			// Persist Restaurant 
@@ -205,6 +178,69 @@ public class RestaurantServlet extends HttpServlet
 		{
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().write("{\"message\": \"Error creating restaurant.\"}");
+			e.printStackTrace();
+		}
+	}
+	
+	private void addMenu(HttpServletRequest request, HttpServletResponse response) throws IOException
+	{
+		try
+		{
+			ObjectMapper objectMapper = new ObjectMapper();
+			Menu menu = objectMapper.readValue(request.getInputStream(), Menu.class);
+			
+			Long restaurantId = Long.parseLong(request.getParameter("restaurantId"));
+			Restaurant restaurant = transactionManager.getCurrentSession().get(Restaurant.class, restaurantId);
+			menu.setName(menu.getName());
+			
+			List<MenuItem> menuItems = menu.getMenuItems();
+			// Associate menu items with the menu and restaurant
+			if (menuItems != null)
+			{
+				for (MenuItem item : menuItems)
+				{
+					item.setMenu(menu);
+					item.setName(item.getName());
+					item.setDescription(item.getDescription());
+					item.setPrice(item.getPrice());
+					item.setRestaurant(restaurant);
+				}
+			}
+			
+			menu.setMenuItems(menuItems);
+			
+			restaurantDao.addMenu(restaurantId, menu);
+			
+			response.setStatus(HttpServletResponse.SC_CREATED);
+			response.getWriter().write("{\"message\": \"Menu added successfully!\"}");
+		}
+		catch (Exception e)
+		{
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("{\"message\": \"Error adding menu.\"}");
+			e.printStackTrace();
+		}
+	}
+	
+	private void addMenuItem(HttpServletRequest request, HttpServletResponse response) throws IOException
+	{
+		try
+		{
+			ObjectMapper objectMapper = new ObjectMapper();
+			MenuItem menuItem = objectMapper.readValue(request.getInputStream(), MenuItem.class);
+			
+			Long restaurantId = Long.parseLong(request.getParameter("restaurantId"));
+			Long menuId = Long.parseLong(request.getParameter("menuId"));
+			
+			restaurantDao.addMenuItem(restaurantId, menuId, menuItem);
+			
+			response.setStatus(HttpServletResponse.SC_CREATED);
+			response.getWriter().write("{\"message\": \"Menu item added successfully!\"}");
+		}
+		catch (Exception e)
+		{
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("{\"message\": \"Error adding menu item.\"}");
 			e.printStackTrace();
 		}
 	}

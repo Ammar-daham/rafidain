@@ -23,11 +23,57 @@ public class Menu
 	private Long menuId;
 	
 	@ManyToOne
-	@JoinColumn(name = "restaurant_id", referencedColumnName = "restaurant_id")
+	@JoinColumn(name = "restaurant_id")
 	private Restaurant restaurant;
 	
 	private String name; // Example: "Lunch Menu", "Dinner Specials"
 	
 	@OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
 	private List<MenuItem> menuItems;
+	
+	public Long getMenuId()
+	{
+		return menuId;
+	}
+	
+	public void setMenuId(Long menuId)
+	{
+		this.menuId = menuId;
+	}
+	
+	public Restaurant getRestaurant()
+	{
+		return restaurant;
+	}
+	
+	public void setRestaurant(Restaurant restaurant)
+	{
+		this.restaurant = restaurant;
+	}
+	
+	public String getName()
+	{
+		return name;
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	
+	public List<MenuItem> getMenuItems()
+	{
+		return menuItems;
+	}
+	
+	public void setMenuItems(List<MenuItem> menuItems)
+	{
+		this.menuItems = menuItems;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Menu [menuId=" + menuId + ", name=" + name + ", menuItems=" + menuItems + "]";
+	}
 }
