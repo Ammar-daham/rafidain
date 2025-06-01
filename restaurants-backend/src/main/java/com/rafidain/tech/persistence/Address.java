@@ -1,5 +1,7 @@
 package com.rafidain.tech.persistence;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +23,14 @@ public class Address
 	public String postalCode;
 	
 	@OneToOne(mappedBy = "address")
+	@JsonBackReference("restaurant-address")
 	public Restaurant restaurant;
+	
+	@Column(name = "latitude")
+	private Double latitude;
+	
+	@Column(name = "longitude")
+	private Double longitude;
 	
 	public Long getAddressId()
 	{

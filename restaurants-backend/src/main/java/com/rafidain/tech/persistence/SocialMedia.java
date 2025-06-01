@@ -1,5 +1,7 @@
 package com.rafidain.tech.persistence;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +22,7 @@ public class SocialMedia
 	
 	@ManyToOne
 	@JoinColumn(name = "restaurant_id")
+	@JsonBackReference("restaurant-socialMedia")
 	private Restaurant restaurant;
 	
 	public Long getSocialMediaId()

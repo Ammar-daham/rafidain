@@ -3,6 +3,8 @@ package com.rafidain.tech.persistence;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,6 +42,7 @@ public class User
 	public Role role;
 	
 	@OneToMany(mappedBy = "owner")
+	@JsonManagedReference("restaurant-owner")
 	private List<Restaurant> ownedRestaurants;
 	
 	public Long getUserId()

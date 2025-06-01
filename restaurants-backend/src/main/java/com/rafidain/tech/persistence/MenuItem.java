@@ -2,6 +2,8 @@ package com.rafidain.tech.persistence;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,10 +29,12 @@ public class MenuItem
 	
 	@ManyToOne
 	@JoinColumn(name = "menu_id", referencedColumnName = "menu_id")
+	@JsonBackReference("menus-menuitem")
 	private Menu menu;
 	
 	@ManyToOne
 	@JoinColumn(name = "restaurant_id", referencedColumnName = "restaurant_id")
+	@JsonBackReference
 	private Restaurant restaurant;
 	
 	@OneToMany(mappedBy = "menuItem")

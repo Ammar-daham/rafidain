@@ -79,8 +79,37 @@ public class RestaurantServlet extends HttpServlet
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello from RestaurantServlet!");
+		response.setContentType("application/json");
+		
+		transactionManager.beginTransaction(); // Begin transaction
+		
+		try
+		{
+			String action = request.getParameter("action");
+			
+			switch (action)
+			{
+				case "getRestaurantsByCity":
+					getRestaurantsByCity(request, response);
+					break;
+				default:
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					response.getWriter().write("{\"message\": \"Invalid action type.\"}");
+					break;
+			}
+			
+			transactionManager.commit(); // Commit transaction
+		}
+		catch (Exception e)
+		{
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("{\"message\": \"Error processing request.\"}");
+			e.printStackTrace();
+		}
+		finally
+		{
+			transactionManager.endTransaction(); // End transaction safely
+		}
 	}
 	
 	@Override
@@ -242,6 +271,57 @@ public class RestaurantServlet extends HttpServlet
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().write("{\"message\": \"Error adding menu item.\"}");
 			e.printStackTrace();
+		}
+	}
+	
+	private void getRestaurantsByCity(HttpServletRequest request, HttpServletResponse response) throws IOException
+	{
+		try
+		{
+			String cityName = request.getParameter("city");
+			
+			// Ensure city name is provided
+			if (cityName == null || cityName.isEmpty())
+			{
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				response.getWriter().write("{\"message\": \"City name is required.\"}");
+				return;
+			}
+			FinnishCity cityEnum = FinnishCity.valueOf(cityName.toUpperCase());
+			
+			// Fetch city from DB
+			City city =
+					transactionManager.getCurrentSession().createQuery("FROM City WHERE name = :cityName", City.class)
+							.setParameter("cityName", cityEnum).getSingleResult();
+			
+			System.out.println("cityname " + city.toString());
+
+			// Fetch restaurants belonging to the city
+			List<Restaurant> restaurants = transactionManager.getCurrentSession()
+					.createQuery("FROM Restaurant WHERE city = :city", Restaurant.class).setParameter("city", city)
+					.getResultList();
+			System.out.println("cityname " + restaurants);
+			
+			//			// Convert list to JSON and send response
+			ObjectMapper objectMapper = new ObjectMapper();
+			String jsonResponse = objectMapper.writeValueAsString(restaurants);
+			System.out.println("jsonResponse " + restaurants);
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.getWriter().write(jsonResponse);
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace(); // Good, keep it
+			Throwable cause = e.getCause();
+			while (cause != null)
+			{
+				cause.printStackTrace();
+				cause = cause.getCause();
+			}
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("{\"message\": \"Error fetching restaurants.\"}");
+			
 		}
 	}
 	

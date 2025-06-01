@@ -1,6 +1,10 @@
 package com.rafidain.tech.persistence;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -29,10 +33,12 @@ public class Restaurant
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id", referencedColumnName = "address_id")
+	@JsonManagedReference("restaurant-address")
 	public Address address;
 	
 	@ManyToOne
 	@JoinColumn(name = "city_id", referencedColumnName = "city_id")
+	@JsonBackReference("restaurant-city")
 	private City city;
 	
 	@Column(name = "phone_number")
@@ -48,15 +54,18 @@ public class Restaurant
 	
 	@Column(name = "social_media")
 	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+	@JsonManagedReference("restaurant-socialMedia")
 	private List<SocialMedia> socialMedia;
 	
 	@ManyToOne
 	@JoinColumn(name = "owner_id", referencedColumnName = "user_id")
+	@JsonBackReference("restaurant-owner")
 	private User owner;
 	
 	@Column(name = "menus")
 	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
-	private List<Menu> menu;
+	@JsonManagedReference("restaurant-menus")
+	private List<Menu> menu = new ArrayList<>();
 	
 	public Long getRestaurantId()
 	{
@@ -174,6 +183,6 @@ public class Restaurant
 		return "Restaurant [restaurantId=" + restaurantId + ", name=" + name + ", description=" + description
 				+ ", address=" + address + ", phoneNumber=" + phoneNumber + ", isOpen=" + isOpen + ", rating=" + rating
 				
-				+ ", openingHours=" + openingHours + ", socialMedia=" + socialMedia + ", menu=" + menu + "]";
+				+ ", openingHours=" + openingHours + ", socialMedia=" + socialMedia + ", menu=" + "]";
 	}
 }

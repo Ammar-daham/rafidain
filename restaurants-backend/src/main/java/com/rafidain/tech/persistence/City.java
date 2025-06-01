@@ -1,7 +1,9 @@
 package com.rafidain.tech.persistence;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
@@ -30,7 +32,8 @@ public class City
 	public FinnishCity name;
 	
 	@OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
-	public List<Restaurant> restaurants;
+	@JsonManagedReference("restaurant-city")
+	private List<Restaurant> restaurants = new ArrayList<>();
 	
 
 	public Long getCityId()
@@ -52,11 +55,6 @@ public class City
 	{
 		this.name = name;
 	}
-	
-	//	public void setName(String name)
-	//	{
-	//		this.name = FinnishCity.valueOf(name.toUpperCase());
-	//	}
 	
 	public List<Restaurant> getRestaurants()
 	{

@@ -2,6 +2,9 @@ package com.rafidain.tech.persistence;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,11 +27,13 @@ public class Menu
 	
 	@ManyToOne
 	@JoinColumn(name = "restaurant_id")
+	@JsonBackReference("restaurant-menus")
 	private Restaurant restaurant;
 	
 	private String name; // Example: "Lunch Menu", "Dinner Specials"
 	
 	@OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+	@JsonManagedReference("menus-menuitem")
 	private List<MenuItem> menuItems;
 	
 	public Long getMenuId()
